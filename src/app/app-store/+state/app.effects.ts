@@ -20,5 +20,17 @@ export class AppEffects {
     );
   });
 
+  loadResources$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(AppActions.loadResources),
+      concatMap(() =>
+        this.feedService.getResources().pipe(
+          map(resources => AppActions.loadResourcesSuccess({ resources })),
+          catchError(error => of(AppActions.loadResourcesFailure({ error })))
+        )
+      )
+    );
+  });
+
   constructor(private actions$: Actions, private feedService: FeedService) {}
 }

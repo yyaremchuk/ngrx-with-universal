@@ -3,7 +3,7 @@ import {
   BrowserTransferStateModule
 } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -13,6 +13,7 @@ import { environment } from '../environments/environment';
 import { AppStoreModule } from './app-store/app-store.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ApiKeyInterceptor } from './api-key.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,7 +41,13 @@ import { AppComponent } from './app.component';
       logOnly: environment.production // Restrict extension to log-only mode
     })
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      multi: true,
+      useClass: ApiKeyInterceptor
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
